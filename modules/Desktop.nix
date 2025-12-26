@@ -28,12 +28,7 @@
         autoRepeatDelay=200;
         autoRepeatInterval=35;
         windowManager.qtile.enable=true;
-        windowManager.dwm = {
-		enable = true;
-		#extraSessionCommands=''
-		#	dwmblocks  &
-		#'';
-	};
+        windowManager.dwm.enable=true;
         xkb = {
           layout="gb";
           variant="";
@@ -56,6 +51,7 @@
         xorg.xinit xorg.xrdb xorg.xsetroot xorg.xev
         gnumake
         xorg.libX11.dev
+	github-cli
         xorg.libXft
         xorg.libXinerama
         xorg.libxcb

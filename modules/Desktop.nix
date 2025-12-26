@@ -28,7 +28,12 @@
         autoRepeatDelay=200;
         autoRepeatInterval=35;
         windowManager.qtile.enable=true;
-        windowManager.dwm.enable = true;
+        windowManager.dwm = {
+		enable = true;
+		#extraSessionCommands=''
+		#	dwmblocks  &
+		#'';
+	};
         xkb = {
           layout="gb";
           variant="";
@@ -93,4 +98,5 @@ google-chrome
     dunst
     ];
   };
+
 }

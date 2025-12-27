@@ -20,6 +20,7 @@
       "x-scheme-handler/about" = "librewolf.desktop";
       "x-scheme-handler/unknown" = "librewolf.desktop";
       "application/pdf" = "zaread.desktop";
+      "inode/directory" = "thunar.desktop";
     };
   };
 

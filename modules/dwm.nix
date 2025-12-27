@@ -248,11 +248,11 @@ static const Key keys[] = {
 	/*{ MODKEY|ShiftMask,		XK_i,          setlayout,              {.v = &layouts[7]} },*/ /* centeredfloatingmaster */
 	/*{ MODKEY|ShiftMask,		XK_f,          setlayout,              {.v = &layouts[8]} },*/
 
+	{ MODKEY,			          XK_q,          killclient,           {0} },
+
 
 	/* app launcher*/
-
 	{ MODKEY,			          XK_d,          spawn,                {.v = (const char*[]){ "dmenu_run", NULL } } },
-
 	
 	/*===============shell utilities=====================*/
 
@@ -271,7 +271,6 @@ static const Key keys[] = {
 	/* login / power options */
 
 	{ MODKEY,			          XK_BackSpace,  spawn,                {.v = (const char*[]){ "${pwrMgrScript}/bin/pwrMgr", NULL } } },
-	{ MODKEY,			          XK_q,          killclient,           {0} },
 	{ MODKEY|ShiftMask,		  XK_q,          spawn,                {.v = (const char*[]){ "${pwrMgrScript}/bin/pwrMgr", NULL } } },
 
 
@@ -281,8 +280,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	  	XK_Return,     togglescratch,        {.ui = 0} },
 
 	/* browser*/
+	{ MODKEY,			          XK_b,          spawn,                {.v = (const char*[]){ "${pkgs.librewolf}/bin/librewolf", NULL } } },
 
-	{ MODKEY,			          XK_b,          spawn,                {.v = (const char*[]){ "xdg-open about:home", NULL } } },
+	/* file explorer*/
+	{ MODKEY,			          XK_e,          spawn,                {.v = (const char*[]){ "thunar", NULL } } },
 
 	/* network settings*/
 	{ MODKEY|ShiftMask,		  XK_w,          spawn,                {.v = (const char*[]){ TERMINAL, "-e", "nmtui", NULL } } },

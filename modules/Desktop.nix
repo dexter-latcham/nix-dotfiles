@@ -25,6 +25,7 @@
     hardware.graphics.enable32Bit = true;
 
     programs = {
+      slock.enable = true;
       steam.enable = true;
       zsh.enable = true;
       cdemu.enable = true;
@@ -56,7 +57,7 @@
       };
 
       picom = {
-        enable=true;
+        enable = true;
         backend="glx";
         vSync = true;
       };

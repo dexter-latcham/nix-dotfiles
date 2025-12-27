@@ -1,6 +1,21 @@
 { config, pkgs, lib, ... }:
 let
-	screenshot = pkgs.writeShellScriptBin "screenshot" ''
+	pwrMgrScript = pkgs.writeShellScriptBin "pwrMgr" ''
+    #!/usr/bin/env sh
+		case "$(printf "🔒 lock\n🚪 leave dwm\n♻️ renew dwm\n🐻 hibernate\n🔃 reboot\n🖥️shutdown\n💤 sleep\n📺 display off" | dmenu -i -p 'Action: ')" in
+			'🔒 lock') slock ;;
+			"🚪 leave dwm") kill -TERM "$(pidof dwm)" ;;
+			"♻️ renew dwm") kill -HUP "$(pidof dwm)" ;;
+			'🐻 hibernate') ${pkgs.systemd}/bin/loginctl hibernate -i ;;
+			'💤 sleep') ${pkgs.systemd}/bin/loginctl suspend -i ;;
+			'🔃 reboot') ${pkgs.systemd}/bin/loginctl reboot -i ;;
+			'🖥️shutdown') ${pkgs.systemd}/bin/loginctl poweroff -i ;;
+			'📺 display off') ${pkgs.xset}/bin/xset dpms force off ;;
+			*) exit 1 ;;
+		esac
+		'';
+	
+	screenshotScript = pkgs.writeShellScriptBin "screenshot" ''
       #!/usr/bin/env sh
       set -e
 
@@ -55,7 +70,8 @@ let
 in
 {
   environment.systemPackages = [
-  	screenshot
+  	screenshotScript
+  	pwrMgrScript
   ];
   nixpkgs.overlays = [
 		(self: super: {
@@ -86,9 +102,9 @@ static char selfgcolor[]            = "#eeeeee";
 static char selbordercolor[]        = "#770000";
 static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
-       /*               fg           bg           border   */
-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+  /*               fg           bg           border   */
+  [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+  [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
 typedef struct {
@@ -149,18 +165,18 @@ static const Layout layouts[] = {
 /* key definitions */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
+{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 #define STACKKEYS(MOD,ACTION) \
-	{ MOD,	XK_j,	ACTION##stack,	{.i = INC(+1) } }, \
-	{ MOD,	XK_k,	ACTION##stack,	{.i = INC(-1) } }, \
-	{ MOD,  XK_v,   ACTION##stack,  {.i = 0 } }, \
-	/* { MOD, XK_grave, ACTION##stack, {.i = PREVSEL } }, \ */
-	/* { MOD, XK_a,     ACTION##stack, {.i = 1 } }, \ */
-	/* { MOD, XK_z,     ACTION##stack, {.i = 2 } }, \ */
-	/* { MOD, XK_x,     ACTION##stack, {.i = -1 } }, */
+{ MOD,	XK_j,	ACTION##stack,	{.i = INC(+1) } }, \
+{ MOD,	XK_k,	ACTION##stack,	{.i = INC(-1) } }, \
+{ MOD,  XK_v,   ACTION##stack,  {.i = 0 } }, \
+/* { MOD, XK_grave, ACTION##stack, {.i = PREVSEL } }, \ */
+/* { MOD, XK_a,     ACTION##stack, {.i = 1 } }, \ */
+/* { MOD, XK_z,     ACTION##stack, {.i = 2 } }, \ */
+/* { MOD, XK_x,     ACTION##stack, {.i = -1 } }, */
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -169,25 +185,25 @@ static const Layout layouts[] = {
  * Xresources preferences to load at startup
  */
 ResourcePref resources[] = {
-		{ "color0",		STRING,	&normbordercolor },
-		{ "color8",		STRING,	&selbordercolor },
-		{ "color0",		STRING,	&normbgcolor },
-		{ "color4",		STRING,	&normfgcolor },
-		{ "color0",		STRING,	&selfgcolor },
-		{ "color4",		STRING,	&selbgcolor },
-		{ "borderpx",		INTEGER, &borderpx },
-		{ "snap",		INTEGER, &snap },
-		{ "showbar",		INTEGER, &showbar },
-		{ "topbar",		INTEGER, &topbar },
-		{ "nmaster",		INTEGER, &nmaster },
-		{ "resizehints",	INTEGER, &resizehints },
-		{ "mfact",		FLOAT,	&mfact },
-		{ "gappih",		INTEGER, &gappih },
-		{ "gappiv",		INTEGER, &gappiv },
-		{ "gappoh",		INTEGER, &gappoh },
-		{ "gappov",		INTEGER, &gappov },
-		{ "swallowfloating",	INTEGER, &swallowfloating },
-		{ "smartgaps",		INTEGER, &smartgaps },
+	{ "color0",		STRING,	&normbordercolor },
+	{ "color8",		STRING,	&selbordercolor },
+	{ "color0",		STRING,	&normbgcolor },
+	{ "color4",		STRING,	&normfgcolor },
+	{ "color0",		STRING,	&selfgcolor },
+	{ "color4",		STRING,	&selbgcolor },
+	{ "borderpx",		INTEGER, &borderpx },
+	{ "snap",		INTEGER, &snap },
+	{ "showbar",		INTEGER, &showbar },
+	{ "topbar",		INTEGER, &topbar },
+	{ "nmaster",		INTEGER, &nmaster },
+	{ "resizehints",	INTEGER, &resizehints },
+	{ "mfact",		FLOAT,	&mfact },
+	{ "gappih",		INTEGER, &gappih },
+	{ "gappiv",		INTEGER, &gappiv },
+	{ "gappoh",		INTEGER, &gappoh },
+	{ "gappov",		INTEGER, &gappov },
+	{ "swallowfloating",	INTEGER, &swallowfloating },
+	{ "smartgaps",		INTEGER, &smartgaps },
 };
 
 #include <X11/XF86keysym.h>
@@ -206,75 +222,29 @@ static const Key keys[] = {
 	TAGKEYS(			XK_7,          6)
 	TAGKEYS(			XK_8,          7)
 	TAGKEYS(			XK_9,          8)
-	{ MODKEY,			XK_0,	       view,                   {.ui = ~0 } },
-	{ MODKEY|ShiftMask,		XK_0,	       tag,                    {.ui = ~0 } },
 
+	/*===============window manager keybinds=====================*/
 
+	{ MODKEY,			          XK_0,	         view,                 {.ui = ~0 } },
+	{ MODKEY|ShiftMask,		  XK_0,	         tag,                  {.ui = ~0 } },
+	{ MODKEY,			          XK_Tab,        view,                 {0} },
+	{ MODKEY,			          XK_o,          incnmaster,           {.i = +1 } },
+	{ MODKEY|ShiftMask,		  XK_o,          incnmaster,           {.i = -1 } },
+	{ MODKEY,			          XK_backslash,  view,                 {0} },
+	{ MODKEY,			          XK_a,          togglegaps,           {0} },
 
-	/* app launcher*/
-	{ MODKEY,			XK_d,          spawn,                  {.v = (const char*[]){ "dmenu_run", NULL } } },
+	{ MODKEY,			          XK_f,          togglefullscr,        {0} },
 
+	{ MODKEY,			          XK_h,          setmfact,             {.f = -0.05} },
+	{ MODKEY,			          XK_l,          setmfact,             {.f = +0.05} },
+	{ MODKEY,			          XK_Left,       focusmon,             {.i = -1 } },
+	{ MODKEY|ShiftMask,		  XK_Left,       tagmon,               {.i = -1 } },
+	{ MODKEY,			          XK_Right,      focusmon,             {.i = +1 } },
+	{ MODKEY|ShiftMask,		  XK_Right,      tagmon,               {.i = +1 } },
+	{ MODKEY,			          XK_space,      zoom,                 {0} },
+	{ MODKEY|ShiftMask,		  XK_space,      togglefloating,       {0} },
 
-	/* shell utilities*/
-	{ MODKEY|ShiftMask,		XK_s,	       spawn, 		       {.v = (const char*[]){ "${screenshot}/bin/screenshot", NULL } } },
-	{ 0,				XK_Print,      spawn,                  SHCMD("maim pic-full-$(date '+%y%m%d-%H%M-%S').png") },
-
-	/* TODO emoji selection utility*/
-	/*{ MODKEY,			XK_grave,      spawn,	               {.v = (const char*[]){ "dmenuunicode", NULL } } },*/
-
-
-	/* TODO screen recording*/
-	/*{ MODKEY,			XK_Print,      spawn,		       {.v = (const char*[]){ "dmenurecord", NULL } } },*/
-	/*{ MODKEY|ShiftMask,		XK_Print,      spawn,                  {.v = (const char*[]){ "dmenurecord", "kill", NULL } } },*/
-	/*{ MODKEY,			XK_Delete,     spawn,                  {.v = (const char*[]){ "dmenurecord", "kill", NULL } } },*/
-	/*{ MODKEY,			XK_Scroll_Lock, spawn,                 SHCMD("killall screenkey || screenkey &") },*/
-
-	/* login / power options */
-	{ MODKEY,			XK_BackSpace,  spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
-	{ MODKEY|ShiftMask,		XK_BackSpace,  spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
-	{ MODKEY,			XK_q,          killclient,             {0} },
-	{ MODKEY|ShiftMask,		XK_q,          spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
-
-
-	/* application launch keybinds*/
-
-	/* terminal / scratchpad*/
-	{ MODKEY,			XK_Return,     spawn,                  SHCMD("st")},
-	{ MODKEY|ShiftMask,		XK_Return,     togglescratch,          {.ui = 0} },
-
-	/* browser*/
-	{ MODKEY,			XK_b,          spawn,                  {.v = (const char*[]){ "xdg-open about:home", NULL } } },
-
-	/* network settings*/
-	{ MODKEY|ShiftMask,		XK_w,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "nmtui", NULL } } },
-
-	/* htop, similar to task manager*/
-	{ MODKEY|ShiftMask,		XK_r,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "htop", NULL } } },
-
-
-
-	{ MODKEY|ShiftMask,		XK_b,          togglebar,                  {0} },
-
-
-	/* window manager keybinds*/
-	{ MODKEY,			XK_Tab,        view,                   {0} },
-	{ MODKEY,			XK_o,          incnmaster,             {.i = +1 } },
-	{ MODKEY|ShiftMask,		XK_o,          incnmaster,             {.i = -1 } },
-	{ MODKEY,			XK_backslash,  view,                   {0} },
-	{ MODKEY,			XK_a,          togglegaps,             {0} },
-
-	{ MODKEY,			XK_f,          togglefullscr,          {0} },
-
-	{ MODKEY,			XK_h,          setmfact,               {.f = -0.05} },
-	{ MODKEY,			XK_l,          setmfact,               {.f = +0.05} },
-	{ MODKEY,			XK_Left,       focusmon,               {.i = -1 } },
-	{ MODKEY|ShiftMask,		XK_Left,       tagmon,                 {.i = -1 } },
-	{ MODKEY,			XK_Right,      focusmon,               {.i = +1 } },
-	{ MODKEY|ShiftMask,		XK_Right,      tagmon,                 {.i = +1 } },
-	{ MODKEY,			XK_space,      zoom,                   {0} },
-	{ MODKEY|ShiftMask,		XK_space,      togglefloating,         {0} },
-
-
+	{ MODKEY|ShiftMask,		  XK_b,          togglebar,            {0} },
 
 	/* keybinds for alternate layouts*/
 	/*{ MODKEY,			XK_t,          setlayout,              {.v = &layouts[0]} }, */ /* tile */
@@ -286,6 +256,48 @@ static const Key keys[] = {
 	/*{ MODKEY,			XK_i,          setlayout,              {.v = &layouts[6]} },*/ /* centeredmaster */
 	/*{ MODKEY|ShiftMask,		XK_i,          setlayout,              {.v = &layouts[7]} },*/ /* centeredfloatingmaster */
 	/*{ MODKEY|ShiftMask,		XK_f,          setlayout,              {.v = &layouts[8]} },*/
+
+
+	/* app launcher*/
+
+	{ MODKEY,			          XK_d,          spawn,                {.v = (const char*[]){ "dmenu_run", NULL } } },
+
+	
+	/*===============shell utilities=====================*/
+
+	{ MODKEY|ShiftMask,		  XK_s,	         spawn, 		           {.v = (const char*[]){ "${screenshotScript}/bin/screenshot", NULL } } },
+	{ 0,				            XK_Print,      spawn,                SHCMD("maim pic-full-$(date '+%y%m%d-%H%M-%S').png") },
+
+	/* TODO emoji selection utility*/
+	/*{ MODKEY,			XK_grave,      spawn,	               {.v = (const char*[]){ "dmenuunicode", NULL } } },*/
+
+	/* TODO screen recording*/
+	/*{ MODKEY,			XK_Print,      spawn,		       {.v = (const char*[]){ "dmenurecord", NULL } } },*/
+	/*{ MODKEY|ShiftMask,		XK_Print,      spawn,                  {.v = (const char*[]){ "dmenurecord", "kill", NULL } } },*/
+	/*{ MODKEY,			XK_Delete,     spawn,                  {.v = (const char*[]){ "dmenurecord", "kill", NULL } } },*/
+	/*{ MODKEY,			XK_Scroll_Lock, spawn,                 SHCMD("killall screenkey || screenkey &") },*/
+
+	/* login / power options */
+
+	{ MODKEY,			          XK_BackSpace,  spawn,                {.v = (const char*[]){ "${pwrMgrScript}/bin/pwrMgr", NULL } } },
+	{ MODKEY,			          XK_q,          killclient,           {0} },
+	{ MODKEY|ShiftMask,		  XK_q,          spawn,                {.v = (const char*[]){ "${pwrMgrScript}/bin/pwrMgr", NULL } } },
+
+
+	/*===============application binds=====================*/
+	/* terminal / scratchpad*/
+	{ MODKEY,			          XK_Return,     spawn,                SHCMD(TERMINAL)},
+	{ MODKEY|ShiftMask,	  	XK_Return,     togglescratch,        {.ui = 0} },
+
+	/* browser*/
+
+	{ MODKEY,			          XK_b,          spawn,                {.v = (const char*[]){ "xdg-open about:home", NULL } } },
+
+	/* network settings*/
+	{ MODKEY|ShiftMask,		  XK_w,          spawn,                {.v = (const char*[]){ TERMINAL, "-e", "nmtui", NULL } } },
+
+	/* htop*/
+	{ MODKEY|ShiftMask,		  XK_r,          spawn,                {.v = (const char*[]){ TERMINAL, "-e", "htop", NULL } } },
 };
 
 /* TODO setup dwmblocks for bar*/
@@ -296,7 +308,7 @@ static const Key keys[] = {
 static const Button buttons[] = {
 	/* click                event mask           button          function        argument */
 #ifndef __OpenBSD__
-	{ ClkWinTitle,          0,                   Button2,        zoom,           {0} },
+	  { ClkWinTitle,          0,                   Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,                   Button1,        sigdwmblocks,   {.i = 1} },
 	{ ClkStatusText,        0,                   Button2,        sigdwmblocks,   {.i = 2} },
 	{ ClkStatusText,        0,                   Button3,        sigdwmblocks,   {.i = 3} },
@@ -318,7 +330,6 @@ static const Button buttons[] = {
 	{ ClkTagBar,		0,		     Button5,	     shiftview,      {.i = 1} },
 	{ ClkRootWin,		0,		     Button2,	     togglebar,      {0} },
 };
-
     		'';
     	in{
       	src = super.fetchFromGitHub {

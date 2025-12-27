@@ -8,6 +8,7 @@
     ];
 
     systemPackages = with pkgs; [
+      pstree
       htop
       fastfetch
       jq

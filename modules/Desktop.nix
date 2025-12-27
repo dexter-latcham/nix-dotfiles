@@ -83,7 +83,6 @@
         pulsemixer
         git
         gnumake
-	librewolf
         gcc
 	spotify
         freetype

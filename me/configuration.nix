@@ -9,10 +9,13 @@ with pkgs; let
 inherit (builtins) attrValues;
 in
 {
+
+
+
+
   imports = attrValues myConfig.nixosModules;
   nixpkgs.overlays = attrValues myConfig.overlays;
   home-manager.sharedModules = attrValues myConfig.homeModules;
-  #environment.systemPackages = attrValues myConfig.packages.${pkgs.stdenv.hostPlatform.system};
 
 
   environment.systemPackages = with pkgs; [
@@ -22,7 +25,9 @@ in
 
   hardware.graphics = {
     enable=true;
+    enable32Bit = true;
   };
+
 
   hardware.nvidia = {
     modesetting.enable=true;
@@ -44,16 +49,7 @@ nixpkgs.config.permittedInsecurePackages = [
 ];
 
   nixpkgs.config.allowUnfree=true;
+
   security.polkit.enable = true;
-      services.pipewire = {
-        enable = true;
-
-        alsa = {
-          enable = true;
-          support32Bit = true;
-        };
-
-        pulse.enable = true;
-      };
 
 }

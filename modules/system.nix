@@ -7,6 +7,8 @@
 }:
 {
   imports = with myConfig.inputs.home-manager.nixosModules; [ home-manager ];
+
+
   config = {
     boot = {
       loader = {
@@ -34,12 +36,16 @@
       };
     };
 
+
+    console.keyMap="uk";
     time.timeZone = "Europe/London";
 
     i18n.defaultLocale = "en_GB.UTF-8";
 
     system.stateVersion = "25.11"; # Did you read the comment?
 
+
+    hardware.bluetooth.enable = true;
     users = {
       users.dex = {
         isNormalUser = true;

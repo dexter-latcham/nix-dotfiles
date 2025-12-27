@@ -1,5 +1,25 @@
 { config, pkgs, lib, ... }:
 let
+  dwmblocksAsync = pkgs.stdenv.mkDerivation {
+    pname = "dwmblocks";
+    version = "1";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "UtkarshVerma";
+      repo = "dwmblocks-async";
+      rev = "main"; # or a commit/tag
+      hash = lib.fakeSha256; # leave blank, rebuild and fill
+    };
+
+    nativeBuildInputs = [ pkgs.pkg-config ];
+    buildInputs = [ pkgs.libX11 pkgs.pkg-config ]
+      ++ builtins.attrValues { inherit (pkgs.xorg) libxcb xcbutil; };
+
+    makeFlags = [ "PREFIX=$(out)" ];
+
+    meta.mainProgram = "dwmblocks";
+  };
+
 	pwrMgrScript = pkgs.writeShellScriptBin "pwrMgr" ''
     #!/usr/bin/env sh
 		case "$(printf "🔒 lock\n🚪 leave dwm\n♻️ renew dwm\n🐻 hibernate\n🔃 reboot\n🖥️shutdown\n💤 sleep\n📺 display off" | dmenu -i -p 'Action: ')" in
@@ -38,10 +58,12 @@ let
 '';
 in
 {
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs;[
   	screenshotScript
   	pwrMgrScript
+  	dwmblocks
   ];
+
   nixpkgs.overlays = [
 		(self: super: {
     	dwm = super.dwm.overrideAttrs (oldAttrs: let

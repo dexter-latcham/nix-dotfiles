@@ -26,7 +26,14 @@ in
   hardware.graphics = {
     enable=true;
     enable32Bit = true;
+    extraPackages = with pkgs; [
+      intel-media-driver
+      intel-vaapi-driver
+      libvdpau-va-gl
+    ];
   };
+
+    environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
 
 
   hardware.nvidia = {
@@ -35,14 +42,14 @@ in
     nvidiaSettings = true;
     prime = {
       offload = {
-	enable = true;
-	enableOffloadCmd=true;
+	      enable = true;
+	      enableOffloadCmd=true;
       };
       intelBusId = "PCI:00:02:0";
       nvidiaBusId = "PCI:01:00:0";
     };
   };
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = ["nvidia" "modesetting"];
 
 nixpkgs.config.permittedInsecurePackages = [
 "qtwebengine-5.15.19"

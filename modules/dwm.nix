@@ -41,8 +41,7 @@ let
       xclip_img="${pkgs.xclip}/bin/xclip -sel clip -t image/png"
       xclip_txt="${pkgs.xclip}/bin/xclip -sel clip"
 
-			choice = $(printf "a selected area\\ncurrent window\\nfull screen\\na selected area (copy)\\ncurrent window (copy)\\nfull screen (copy)\\ncopy selected image to text" | ${pkgs.dmenu}/bin/dmenu -l 7 -i -p "Screenshot which area?")
-      case "$choice" in
+      case "$(printf "a selected area\\ncurrent window\\nfull screen\\na selected area (copy)\\ncurrent window (copy)\\nfull screen (copy)\\ncopy selected image to text" | ${pkgs.dmenu}/bin/dmenu -l 7 -i -p "Screenshot which area?") " in
         "a selected area") ${pkgs.maim}/bin/maim -u -s "pic-selected-$output" ;;
         "current window") ${pkgs.maim}/bin/maim -B -q -d 0.2 \ -i "$(${pkgs.xdotool}/bin/xdotool getactivewindow)" "pic-window-$output" ;;
         "full screen") ${pkgs.maim}/bin/maim -q -d 0.2 "pic-full-$output" ;;
@@ -66,6 +65,51 @@ in
 
   nixpkgs.overlays = [
 		(self: super: {
+    	dmenu = super.dmenu.overrideAttrs (oldAttrs: let
+    		configFile = super.writeText "config.def.h" ''
+     static int topbar = 1;                      /* -b  option; if 0, dmenu appears at bottom     */
+		 static int centered = 1;                    /* -c option; centers dmenu on screen */
+		 static int min_width = 500;                    /* minimum width when centered */
+		 static int fuzzy =1;
+		 static const float menu_height_ratio = 4.0f;  /* This is the ratio used in the original calculation */
+     static const char *fonts[] = { "monospace:size=10" };
+     static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
+     static const char *colors[SchemeLast][2] = {
+     	[SchemeNorm] = { "#bbbbbb", "#222222" },
+     	[SchemeSel] = { "#eeeeee", "#005577" },
+     	[SchemeOut] = { "#000000", "#00ffff" },
+     };
+
+     static unsigned int lines      = 10;
+     static const char worddelimiters[] = " ";
+    			'';
+    	in{
+      	patches = [
+    			(super.fetchpatch{
+    				url = "https://tools.suckless.org/dmenu/patches/sort_by_popularity/dmenu-sort_by_popularity-20250117-86f0b51.diff";
+    				sha256="019aaix8aiyg646qvvmq93zz60xh1a92lr9znkz6qhgfigg64xdi";
+    			})
+    			(super.fetchpatch{
+    				url = "https://tools.suckless.org/dmenu/patches/fuzzymatch/dmenu-fuzzymatch-5.3.diff";
+    				sha256="0f4a3sfpcgqy751kgpqlvvj1sybjfa798g2rynl9cdng08kca6vm";
+    			})
+    			(super.fetchpatch{
+    				url = "https://tools.suckless.org/dmenu/patches/mouse-support/dmenu-mousesupport-5.4.diff";
+    				sha256="13c9i4p8zdpw5fx3c1051had9xh13fs2ix5f7cb3hbm5xwqdvcjj";
+    			})
+
+    			(super.fetchpatch{
+    				url = "https://tools.suckless.org/dmenu/patches/xresources/dmenu-xresources-4.9.diff";
+    				sha256="1mk3zgk43ilcy184jhmr3hxw9pjbnzhba3hifrk3k7wmdki89f3m";
+    			})
+    			../dwmPatches/dmenuCenter.diff
+      	];
+      	postPatch = ''
+      		cp ${configFile} config.h
+      	'';
+      });
+    })
+		(self: super: {
     	dwm = super.dwm.overrideAttrs (oldAttrs: let
     		configFile = super.writeText "config.def.h" ''
 /* See LICENSE file for copyright and license details. */
@@ -84,8 +128,13 @@ static unsigned int gappov    = 30;       /* vert outer gap between windows and 
 static int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
+static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systrayonleft = 0;    /* 0: systray in the right corner, >0: systray on left of status text */
+static const unsigned int systrayspacing = 2;   /* systray spacing */
+static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
+static const int showsystray        = 1;        /* 0 means no systray */
 static int topbar             = 1;        /* 0 means bottom bar */
-static char *fonts[]          = { "monospace:size=10", "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"  };
+static char *fonts[]          = { "monospace:size=15", "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true"  };
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -332,10 +381,11 @@ static const Button buttons[] = {
       	};
       	buildInputs = oldAttrs.buildInputs ++ [ self.libxcb self.libxinerama];
       	patches = [
-					../dwmSteam.diff
+					../dwmPatches/dwmSteam.diff
+					../dwmPatches/systray.diff
       	];
       	postPatch = ''
-      	cp ${configFile} config.h
+      		cp ${configFile} config.h
       	'';
       });
     }

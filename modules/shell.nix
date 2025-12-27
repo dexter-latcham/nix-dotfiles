@@ -8,6 +8,7 @@
     ];
 
     systemPackages = with pkgs; [
+      fastfetch
       jq
       fd
       xh

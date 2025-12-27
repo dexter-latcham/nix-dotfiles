@@ -1,4 +1,24 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }:let
+  dwmblocksAsync = pkgs.stdenv.mkDerivation {
+    pname = "dwmblocks";
+    version = "1";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "UtkarshVerma";
+      repo = "dwmblocks-async";
+      rev = "main"; # or a commit/tag
+      hash = lib.fakeSha256; # leave blank, rebuild and fill
+    };
+
+    nativeBuildInputs = [ pkgs.pkg-config ];
+    buildInputs = [ pkgs.libX11 pkgs.pkg-config ]
+      ++ builtins.attrValues { inherit (pkgs.xorg) libxcb xcbutil; };
+
+    makeFlags = [ "PREFIX=$(out)" ];
+
+    meta.mainProgram = "dwmblocks";
+  };
+  in
 {
   config = {
     hardware.bluetooth.enable = true;
@@ -33,7 +53,6 @@
           layout="gb";
           variant="";
         };
-        videoDrivers = ["nvidia"];
       };
 
       picom = {
@@ -46,6 +65,10 @@
       upower.enable = true;
     };
     environment.systemPackages = with pkgs; [
+      libxinerama
+      xclip
+      dwmblocks
+      tree-sitter
       stremio
         vim wget neovim fontconfig
         xorg.xinit xorg.xrdb xorg.xsetroot xorg.xev
@@ -69,15 +92,6 @@
         autorandr
         dmenu
         vesktop
-        (st.overrideAttrs (oldAttrs: rec {
-                           src = fetchFromGitHub {
-                           owner = "LukeSmithxyz";
-                           repo = "st";
-                           rev = "62ebf677d3ad79e0596ff610127df5db034cd234";
-                           sha256 = "L4FKnK4k2oImuRxlapQckydpAAyivwASeJixTj+iFrM=";
-                           };
-                           buildInputs = oldAttrs.buildInputs ++ [ harfbuzz ];
-                           }))
     signal-desktop-bin
       qbittorrent
       texliveFull
@@ -92,6 +106,9 @@
 google-chrome
     feh
     dunst
+    unzip
+    arandr
+    st
     ];
   };
 

@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Dexters nix config";
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     home-manager = {

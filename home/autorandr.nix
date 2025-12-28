@@ -9,11 +9,11 @@
     enable = true;
     hooks.postswitch = {
       set-wallpaper = ''
-        ${pkgs.feh}/bin/feh --no-fehbg --bg-fill /etc/nixos/walls/Cloudsday.jpg
+        ${pkgs.xwallpaper}/bin/xwallpaper --zoom /etc/nixos/walls/current &
       '';
     };
   };
   xsession.initExtra = ''
-    autorandr --change &
+    autorandr --change
   '';
 }

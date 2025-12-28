@@ -1,13 +1,6 @@
   self: super: {
     st = super.st.overrideAttrs (oldAttrs: let
     configFile = super.writeText "config.def.h" ''
-/* See LICENSE file for copyright and license details. */
-
-/*
- * appearance
- *
- * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
- */
 static char *font = "mono:pixelsize=12:antialias=true:autohint=true";
 static char *font2[] = { "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true" };
 static int borderpx = 2;
@@ -33,11 +26,6 @@ char *vtiden = "\033[?6c";
 static float cwscale = 1.0;
 static float chscale = 1.0;
 
-/*
- * word delimiter string
- *
- * More advanced example: L" `'\"()[]{}"
- */
 wchar_t *worddelimiters = L" ";
 
 /* selection timeouts (in milliseconds) */

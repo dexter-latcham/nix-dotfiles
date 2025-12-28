@@ -55,6 +55,8 @@
     };
 
     environment.systemPackages = with pkgs; [
+      xwallpaper
+      pywal
       libxinerama
       xclip
       tree-sitter

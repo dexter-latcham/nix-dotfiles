@@ -49,7 +49,7 @@ in
       nvidiaBusId = "PCI:01:00:0";
     };
   };
-  services.xserver.videoDrivers = ["nvidia" "modesetting"];
+  services.xserver.videoDrivers = ["nvidia"];
 
 nixpkgs.config.permittedInsecurePackages = [
 "qtwebengine-5.15.19"

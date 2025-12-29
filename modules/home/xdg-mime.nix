@@ -1,15 +1,14 @@
 { config, pkgs, ... }:
 {
-  # Make sure xdg-utils is installed so xdg-open works
-  home.packages = [
-    pkgs.xdg-utils
-  ];
-
-  # Set MIME types / default apps
-  xdg.desktopEntries.librewolf = {
-    name = "LibreWolf";
-    exec = "${pkgs.librewolf}/bin/librewolf";
+  xdg = {
+    enable = true;
+    mime.enable = true;
   };
+
+  #home.packages = [
+  #  pkgs.xdg-utils
+  #];
+
 
   xdg.mimeApps = {
     enable = true;

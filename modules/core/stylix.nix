@@ -2,6 +2,7 @@
 {
   stylix = {
     enable = true;
-    image = ../../walls/catppuccin.jpg;
+    image = ../../walls/current.jpeg;
+    polarity = "dark";
   };
 }

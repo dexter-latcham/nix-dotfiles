@@ -4,7 +4,7 @@
     settings = {
       auto-optimise-store = true;
       warn-dirty = false;
-      allow-import-from-derivation = false;
+      allow-import-from-derivation = true;
       keep-going = true;
 
       experimental-features = [

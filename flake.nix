@@ -6,8 +6,12 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
-  outputs = { self, nixpkgs, ...}@inputs:
+  outputs = { self, nixpkgs,stylix, ...}@inputs:
   let
       username = "dex";
       system = "x86_64-linux";
@@ -21,7 +25,10 @@
     nixosConfigurations = {
       nixtop = nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [./hosts/laptop];
+        modules = [
+          stylix.nixosModules.stylix
+            ./hosts/laptop
+          ];
         specialArgs = {
             host = "nixtop";
             inherit self inputs username;

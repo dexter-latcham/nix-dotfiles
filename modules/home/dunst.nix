@@ -30,7 +30,6 @@
         markup = "full";
         min_icon_size = 32;
         max_icon_size = 100;
-        font = "JetBrains Mono 15";
       };
     };
   };

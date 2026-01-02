@@ -87,6 +87,7 @@
     unzip
     arandr
     st
+    acpi
   ];
 
 }

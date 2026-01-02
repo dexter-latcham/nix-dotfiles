@@ -19,7 +19,7 @@ let
 #define DELIMITER "  "
 
 // Maximum number of Unicode characters that a block can output.
-#define MAX_BLOCK_OUTPUT_LENGTH 45
+#define MAX_BLOCK_OUTPUT_LENGTH 100
 
 // Control whether blocks are clickable.
 #define CLICKABLE_BLOCKS 1
@@ -32,7 +32,7 @@ let
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
 #define BLOCKS(X)             \
-    X("", "${batScript}/bin/sb-bat", 600, 9)
+    X("", "${batScript}/bin/sb-bat", 600, 1)
 
 #endif  // CONFIG_H
     '';

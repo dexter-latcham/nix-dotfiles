@@ -26,7 +26,13 @@
       autoRepeatDelay=200;
       autoRepeatInterval=35;
       windowManager.qtile.enable=true;
-      windowManager.dwm.enable=true;
+      windowManager.dwm = {
+        extraSessionCommands = ''
+          pkill -x dwm || true
+        '';
+        enable=true;
+      };
+
       xkb = {
         layout="gb";
         variant="";

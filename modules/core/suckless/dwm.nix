@@ -50,7 +50,7 @@ in
       	src = builtins.path {
       		path = ./dwm;
       	};
-      	buildInputs = oldAttrs.buildInputs ++ [ self.libxcb self.libxinerama];
+      	buildInputs = oldAttrs.buildInputs ++ [ self.libxcb self.libxinerama self.imlib2];
       	postPatch = ''
       		cp config.my.h config.h
       	'';

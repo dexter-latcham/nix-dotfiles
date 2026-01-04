@@ -4,6 +4,7 @@
   stylix = {
     enable = true;
     image = ../../walls/current.jpeg;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
 
     icons = {

@@ -1,13 +1,13 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib,username, ... }:
 let
-	dateScript = pkgs.writeShellApplication {
+	sb-date = pkgs.writeShellApplication {
 	    name = "sb-date";
 	    text = builtins.readFile ./statusbar/sb-date.sh;
 	    runtimeInputs = with pkgs;[
 	        coreutils
 	    ];
 	};
-	batScript = pkgs.writeShellApplication {
+	sb-bat = pkgs.writeShellApplication {
 	    name = "sb-bat";
 	    text = builtins.readFile ./statusbar/sb-bat.sh;
 	    runtimeInputs = with pkgs;[
@@ -17,6 +17,14 @@ let
 	        libnotify
 	    ];
 	};
+	sb-net = pkgs.writeShellApplication {
+	    name = "sb-net";
+	    text = builtins.readFile ./statusbar/sb-net.sh;
+	    runtimeInputs = with pkgs;[
+	        coreutils
+	    ];
+	};
+
   dwmblocksAsync = pkgs.dwmblocks.overrideAttrs(old: let
     configFile = pkgs.writeText "config.def.h" ''
 #ifndef CONFIG_H
@@ -39,8 +47,9 @@ let
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
 #define BLOCKS(X)             \
-    X("", "${batScript}/bin/sb-bat", 600, 1) \
-    X("", "${dateScript}/bin/sb-date", 60, 0) 
+    X("", "${sb-net}/bin/sb-net", 0, 2) \
+    X("", "${sb-bat}/bin/sb-bat", 600, 1) \
+    X("", "${sb-date}/bin/sb-date", 60, 0) 
 #endif  // CONFIG_H
     '';
     in {
@@ -64,7 +73,18 @@ in
 {
   environment.systemPackages = with pkgs;[
   	dwmblocksAsync
-    batScript
-    dateScript
+    sb-date
+    sb-bat
+    sb-net
+
+
+  ];
+  networking.networkmanager.dispatcherScripts = [
+    {
+      source = pkgs.writeText "sb-net-update" '' 
+        ${pkgs.procps}/bin/pgrep -u ${username} dwmblocks | xargs -r kill -36
+      '';
+      type = "basic";
+    }
   ];
 }

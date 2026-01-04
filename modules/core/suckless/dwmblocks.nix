@@ -1,5 +1,12 @@
 { config, pkgs, lib, ... }:
 let
+	dateScript = pkgs.writeShellApplication {
+	    name = "sb-date";
+	    text = builtins.readFile ./statusbar/sb-date.sh;
+	    runtimeInputs = with pkgs;[
+	        coreutils
+	    ];
+	};
 	batScript = pkgs.writeShellApplication {
 	    name = "sb-bat";
 	    text = builtins.readFile ./statusbar/sb-bat.sh;
@@ -32,8 +39,8 @@ let
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
 #define BLOCKS(X)             \
-    X("", "${batScript}/bin/sb-bat", 600, 1)
-
+    X("", "${batScript}/bin/sb-bat", 600, 1) \
+    X("", "${dateScript}/bin/sb-date", 60, 0) 
 #endif  // CONFIG_H
     '';
     in {
@@ -58,5 +65,6 @@ in
   environment.systemPackages = with pkgs;[
   	dwmblocksAsync
     batScript
+    dateScript
   ];
 }

@@ -26,6 +26,16 @@
       autoRepeatDelay=200;
       autoRepeatInterval=35;
       windowManager.qtile.enable=true;
+      displayManager.sessionCommands = ''
+        xset s off
+        xset -dpms
+        xset s noblank
+      '';
+      xautolock = {
+        enable = true;
+        locker = "${pkgs.slock}/bin/slock";
+        notifier = "${pkgs.libnotify}/bin/notify-send 'locking shortly'";
+      };
       windowManager.dwm = {
         extraSessionCommands = ''
           pkill -x dwm || true

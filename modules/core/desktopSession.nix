@@ -86,6 +86,7 @@
     autorandr
     dmenu
     vesktop
+    discord
     signal-desktop-bin
     qbittorrent
     texliveFull

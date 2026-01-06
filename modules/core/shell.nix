@@ -85,7 +85,6 @@
       sherlock
       remind
       oxipng
-      lazydocker
       arion
       tabiew
       viddy

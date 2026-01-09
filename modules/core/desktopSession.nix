@@ -1,4 +1,17 @@
 {pkgs, username, ... }:
+let
+  tree-sitter-v010 = pkgs.fetchFromGitHub {
+    owner = "tree-sitter";
+    repo = "tree-sitter";
+    rev = "v0.10.0";
+    sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+  };
+
+  # Override pkgs.tree-sitter globally
+  myPkgs = pkgs // {
+    tree-sitter = tree-sitter-v010;
+  };
+in
 {
   imports = [./suckless];
   programs = {
@@ -58,53 +71,61 @@
   nixpkgs.config.permittedInsecurePackages = [
     "qtwebengine-5.15.19"
   ];
-  environment.systemPackages = with pkgs; [
-    xwallpaper
-    pywal
-    libxinerama
-    xclip
-    tree-sitter
-    stremio
-    vim wget neovim fontconfig
-    xorg.xinit xorg.xrdb xorg.xsetroot xorg.xev
-    gnumake
-    xorg.libX11.dev
-	  github-cli
-    xorg.libXft
-    xorg.libXinerama
-    xorg.libxcb
-    gtk3 gtk4 xdg-desktop-portal-gtk
-    alacritty
-    pulsemixer
-    git
-    gnumake
-    gcc
-	  spotify
-    freetype
-    libx11
-    libxft
-    autorandr
-    dmenu
-    vesktop
-    discord
-    signal-desktop-bin
-    qbittorrent
-    texliveFull
-    sqlitebrowser
-    qdiskinfo
-    vlc
-    picard
-    pulseaudio
-    pavucontrol
-    libnotify
-	  lunarvim
-    google-chrome
-    feh
-    dunst
-    unzip
-    arandr
-    st
-    acpi
+
+  environment.systemPackages = [
+    pkgs.xwallpaper
+    pkgs.pywal
+    pkgs.libxinerama
+    pkgs.xclip
+    pkgs.stremio
+    pkgs.vim
+    pkgs.wget
+    pkgs.neovim
+    pkgs.fontconfig
+    pkgs.xorg.xinit
+    pkgs.xorg.xrdb
+    pkgs.xorg.xsetroot
+    pkgs.xorg.xev
+    pkgs.gnumake
+    pkgs.xorg.libX11.dev
+    pkgs.github-cli
+    pkgs.xorg.libXft
+    pkgs.xorg.libXinerama
+    pkgs.xorg.libxcb
+    pkgs.gtk3
+    pkgs.gtk4
+    pkgs.xdg-desktop-portal-gtk
+    pkgs.alacritty
+    pkgs.pulsemixer
+    pkgs.git
+    pkgs.gnumake
+    pkgs.gcc
+    pkgs.spotify
+    pkgs.freetype
+    pkgs.libx11
+    pkgs.libxft
+    pkgs.autorandr
+    pkgs.dmenu
+    pkgs.vesktop
+    pkgs.discord
+    pkgs.signal-desktop-bin
+    pkgs.qbittorrent
+    pkgs.texliveFull
+    pkgs.sqlitebrowser
+    pkgs.qdiskinfo
+    pkgs.vlc
+    pkgs.picard
+    pkgs.pulseaudio
+    pkgs.pavucontrol
+    pkgs.libnotify
+    myPkgs.lunarvim
+    pkgs.google-chrome
+    pkgs.feh
+    pkgs.dunst
+    pkgs.unzip
+    pkgs.arandr
+    pkgs.st
+    pkgs.acpi
   ];
 
 }

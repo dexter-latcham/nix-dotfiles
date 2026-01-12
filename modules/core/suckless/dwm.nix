@@ -62,7 +62,7 @@ let
 		{ mod=modShift; key = "XK_Return"; fun = "togglescratch"; arg = argUI "0"; }
 		{ mod=modShift; key = "XK_i"; fun = "togglescratch"; arg = argUI "1" ; }
 		{ mod=modShift; key = "XK_b"; fun = "togglescratch"; arg = argUI "2"; }
-		{ key = "XK_d"; fun = "spawn"; arg = argSpawn "dmenu_run"; }
+		{ key = "XK_d"; fun = "spawn"; arg = "{.v = dmenucmd }"; }
 		{ key = "XK_b"; fun = "spawn"; arg = argSpawn "${pkgs.librewolf}/bin/librewolf"; }
 		{ key = "XK_s"; mod = modShift; fun = "spawn"; arg = argSpawn "${screenshotScript}/bin/screenshot"; }
 		{ key = "XK_BackSpace"; fun = "spawn"; arg = argSpawn "${pwrMgrScript}/bin/pwrMgr"; }

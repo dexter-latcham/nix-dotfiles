@@ -1,4 +1,4 @@
-{pkgs, ... }:
+{config, pkgs, ... }:
 with pkgs; let
   patchDesktop = pkg: appName: from: to: lib.hiPrio (
     pkgs.runCommand "$patched-desktop-entry-for-${appName}" {} ''
@@ -17,6 +17,7 @@ in
     (GPUOffloadApp heroic "com.heroicgameslauncher.hgl")
   ];
 
+
   hardware.graphics = {
     enable=true;
     enable32Bit = true;
@@ -29,7 +30,23 @@ in
   environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
 
 
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot=true;
+    settings = {
+      General = {
+        experimental=true;
+        Privacy = "device";
+        JustWorksRepairing = "always";
+        Class = "0x000100";
+        FastConnectable = true;
+      };
+    };
+  };
+  services.blueman.enable = true;
+  # xbox controller support
+  hardware.xpadneo.enable=true;
+
   hardware.nvidia = {
     modesetting.enable=true;
     open = false;
@@ -47,6 +64,10 @@ in
   services.xserver.videoDrivers = ["nvidia"];
 
   boot = {
+    extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
+    extraModprobeConfig = ''
+      options bluetooth disable_ertm=Y
+    '';
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;

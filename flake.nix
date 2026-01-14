@@ -10,8 +10,12 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    }
   };
-  outputs = { self, nixpkgs,stylix, ...}@inputs:
+  outputs = { self, disko, nixpkgs,stylix, ...}@inputs:
   let
       username = "dex";
       system = "x86_64-linux";
@@ -23,6 +27,19 @@
   in
   {
     nixosConfigurations = {
+      testbed = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          inputs.disko.nixosModules.disko
+          ./hosts/testbed/disko.nix
+          stylix.nixosModules.stylix
+            ./hosts/testbed
+          ];
+        specialArgs = {
+            host = "testbed";
+            inherit self inputs username;
+        };
+      };
       nixtop = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [

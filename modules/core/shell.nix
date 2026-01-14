@@ -5,7 +5,7 @@
   environment = {
     variables = {
       TERMINAL="st";
-      EDITOR="nvim"
+      EDITOR="nvim";
       BROWSER="librewolf";
     };
     shells = with pkgs; [

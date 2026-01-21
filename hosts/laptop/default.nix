@@ -47,6 +47,12 @@ in
   # xbox controller support
   hardware.xpadneo.enable=true;
 
+  hardware.pulseaudio = {
+    enable = true;
+    daemon.config = {
+      min-req = "1024/48000";
+    };
+  };
   hardware.nvidia = {
     modesetting.enable=true;
     open = false;

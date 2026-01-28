@@ -36,12 +36,6 @@
         locker = "${pkgs.slock}/bin/slock";
         notifier = "${pkgs.libnotify}/bin/notify-send 'locking shortly'";
       };
-      windowManager.dwm = {
-        extraSessionCommands = ''
-          pkill -x dwm || true
-        '';
-        enable=true;
-      };
 
       xkb = {
         layout="gb";

@@ -16,7 +16,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, disko, nixpkgs,dwm, stylix, ...}@inputs:
+  outputs = { self, disko, nixpkgs, stylix, ...}@inputs:
   let
       username = "dex";
       system = "x86_64-linux";
@@ -30,7 +30,6 @@
       nixtop = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
-          dwm.nixosModules.default
           stylix.nixosModules.stylix
             ./hosts/laptop
           ];
